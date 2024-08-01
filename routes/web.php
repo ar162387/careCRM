@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\DataFileController;
 use App\Http\Controllers\FactoryController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SiteController;
@@ -28,16 +27,16 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-
+    Route::get('/home', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
     Route::resource('/users', UserController::class);
     Route::get('/users/profile', [UserController::class, 'profile'])->name('users.profile');
-    Route::put('/users/status/{user}', [UserController::class, 'statusToggle'])->name('users.status');
-
+    Route::get('/users/status/{user}', [UserController::class, 'statusToggle'])->name('users.status');
     Route::resource('/menus', MenuController::class)->except(['show']);
     Route::resource('/roles', RoleController::class)->except(['create', 'show']);
-    Route::resource('/factories', FactoryController::class)->except(['show', 'destroy']);
-    Route::resource('/sites', SiteController::class)->except(['show', 'destroy']);
+    Route::resource('/factories', FactoryController::class)->except(['show']);
+    Route::resource('/sites', SiteController::class);
     Route::resource('/inspections', InspectionController::class);
     Route::controller(DataFileController::class)
         ->as('data.')
