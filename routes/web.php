@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DataFileController;
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\FactoryController;
 use App\Http\Controllers\InspectionController;
 use App\Http\Controllers\RoleController;
@@ -8,6 +9,8 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\SensorDataController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -20,11 +23,20 @@ use App\Http\Controllers\MenuController;
 |
 */
 
+Route::resource('sites', SiteController::class);
+
+
 Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/fft', function () {
+    return view('fft-graph');
+});
+
 Auth::routes();
+
+
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', function () {
@@ -38,6 +50,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('/factories', FactoryController::class)->except(['show']);
     Route::resource('/sites', SiteController::class);
     Route::resource('/inspections', InspectionController::class);
+    Route::resource('/devices', DeviceController::class, ['only' => ['index', 'show']])->names([
+        'index' => 'devices.index'
+    ]);
+
     Route::controller(DataFileController::class)
         ->as('data.')
         ->group(function () {
@@ -49,3 +65,8 @@ Route::group(['middleware' => ['auth']], function () {
         });
 });
 
+
+Route::resource('/sensor_data', SensorDataController::class);
+Route::post('/sensor_data/generate_plot', [SensorDataController::class, 'generatePlot'])->name('sensor_data.generate_plot');
+Route::post('/sensor-data/generate-time-domain-plot', [SensorDataController::class, 'generateTimeDomainPlot'])->name('sensor_data.generate_time_domain_plot');
+Route::post('/sensor-data/generate-frequency-domain-plot', [SensorDataController::class, 'generateFrequencyDomainPlot'])->name('sensor_data.generate_frequency_domain_plot');

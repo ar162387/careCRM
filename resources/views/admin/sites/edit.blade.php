@@ -1,85 +1,49 @@
 @extends('layouts.care')
-@section('title', 'Factories')
-@section('page-title', 'Edit Factory')
-@section('page-message', "Edit factory data.")
 
 @section('content')
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="iq-card">
-                <div class="iq-card-header d-flex justify-content-between">
-                    <div class="iq-header-title">
-                        <h4 class="card-title">{{ $factory->title }}</h4>
-                    </div>
+    <nav class="mb-3" aria-label="breadcrumb">
+        <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="{{ url('/home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url('/sites') }}">Sites</a></li>
+            <li class="breadcrumb-item active">Edit Site</li>
+        </ol>
+    </nav>
+
+    <form class="mb-9" method="POST" action="{{ route('sites.update', $site->id) }}">
+        @csrf
+        @method('PUT')
+        <div class="row g-3 flex-between-end mb-5">
+            <div class="col-auto">
+                <h2 class="mb-2">Edit Site</h2>
+                <h5 class="text-body-tertiary fw-semibold">
+                    Update the site information for your factories.
+                </h5>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-phoenix-secondary me-2 mb-2 mb-sm-0" type="reset">Discard</button>
+                <button class="btn btn-primary mb-2 mb-sm-0" type="submit">Update Site</button>
+            </div>
+        </div>
+
+        <div class="row g-5">
+            <div class="col-12 col-xl-8">
+                <div class="mb-5">
+                    <h5>Site Title</h5>
+                    <input class="form-control" type="text" id="title" name="title" placeholder="Site Title"
+                           value="{{ old('title', $site->title) }}" required>
                 </div>
 
-                <div class="iq-card-body">
-                    <form action="{{ route('factories.update', $factory->id) }}" method="POST" class="needs-validation" novalidate>
-                        @csrf
-                        @method('PUT')
-                        <div class="row">
-                            <div class="form-group col-md-12">
-                                <label for="title">Factory Title <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="title" name="title"
-                                       value="{{ $factory->title }}" required>
-                                <div class="invalid-feedback">
-                                    Provide complete factory name.
-                                </div>
-                            </div>
-
-                            <div class="form-group col-md-12">
-                                <label for="address">Factory Address <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="address" name="address"
-                                       value="{{ $factory->address }}" required>
-                                <div class="invalid-feedback">
-                                    Provide complete factory address.
-                                </div>
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="owner_name">Owner Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="owner_name" name="owner_name"
-                                       value="{{ $factory->owner_name }}" required>
-                                <div class="invalid-feedback">
-                                    Provide factory owner's name.
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="owner_cnic">Owner's CNIC</label>
-                                <input type="text" class="form-control" id="owner_cnic" name="owner_cnic"
-                                       value="{{ $factory->owner_cnic }}" >
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="email">Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                       value="{{ $factory->email }}" required>
-                                <div class="invalid-feedback">
-                                    Provide a valid email address for correspondence.
-                                </div>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="contact_no">Contact No</label>
-                                <input type="text" class="form-control" id="contact_no" name="contact_no"
-                                       value="{{ $factory->contact_no }}" >
-                            </div>
-
-                            <div class="form-group col-md-6">
-                                <label for="fax">Fax</label>
-                                <input type="text" class="form-control" id="fax" name="fax"
-                                       value="{{ $factory->fax }}" >
-                            </div>
-
-                        </div>
-
-                        <button type="submit" class="btn btn-primary mt-3">Update Factory Data</button>
-                    </form>
+                <div class="mb-5">
+                    <h5>Factory</h5>
+                    <select class="form-control" id="factory_id" name="factory_id" required>
+                        @foreach($factories as $factory)
+                            <option value="{{ $factory->id }}" {{ $site->factory_id == $factory->id ? 'selected' : '' }}>
+                                {{ $factory->title }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>
-    </div>
+    </form>
 @endsection
-
-@push('scripts')
-
-@endpush

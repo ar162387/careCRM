@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Site;
+use App\Models\Factory; // Add this line
 use Illuminate\Http\Request;
 
 class SiteController extends Controller
@@ -21,7 +22,8 @@ class SiteController extends Controller
      */
     public function create()
     {
-        //
+        $factories = Factory::all(); // Add this line
+        return view('admin.sites.create', compact('factories')); // Add this line
     }
 
     /**
@@ -29,7 +31,17 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'factory_id' => 'required|exists:factories,id',
+        ]);
+
+        Site::create([
+            'title' => $request->input('title'),
+            'factory_id' => $request->input('factory_id'),
+        ]);
+
+        return redirect()->route('sites.index')->with('success', 'Site created successfully.');
     }
 
     /**
@@ -45,7 +57,8 @@ class SiteController extends Controller
      */
     public function edit(Site $site)
     {
-        //
+        $factories = Factory::all(); // Add this line
+        return view('admin.sites.edit', compact('site', 'factories')); // Add this line
     }
 
     /**
@@ -53,7 +66,17 @@ class SiteController extends Controller
      */
     public function update(Request $request, Site $site)
     {
-        //
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'factory_id' => 'required|exists:factories,id',
+        ]);
+
+        $site->update([
+            'title' => $request->input('title'),
+            'factory_id' => $request->input('factory_id'),
+        ]);
+
+        return redirect()->route('sites.index')->with('success', 'Site updated successfully.');
     }
 
     /**
@@ -61,7 +84,8 @@ class SiteController extends Controller
      */
     public function destroy(Site $site)
     {
-
+        $site->delete();
+        return redirect()->route('sites.index')->with('success', 'Site deleted successfully.');
     }
 
     public function fetch(Request $request)

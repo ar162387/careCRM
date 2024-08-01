@@ -44,7 +44,7 @@
 <script src="{{ asset('assets/js/phoenix.js') }}"></script>
 <script src="{{ asset('assets/vendors/echarts/echarts.min.js') }}"></script>
 <script src="{{ asset('assets/vendors/sweetalert2/sweetalert2.js') }}"></script>
-<script src="../assets/js/projectmanagement-dashboard.js"></script>
+<script src="{{ asset('assets/js/projectmanagement-dashboard.js') }}"></script>
 
 @if(Session::has('message'))
     <script>
@@ -72,6 +72,7 @@
 
 <!-- Stacking JavaScript -->
 @stack('scripts')
+
 
 </body>
 </html>

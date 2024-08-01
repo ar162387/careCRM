@@ -1,27 +1,16 @@
 @extends('layouts.care')
 
-@section('content')
-    <nav class="mb-3" aria-label="breadcrumb">
-        <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item"><a href="{{ url('/home') }}">Home</a></li>
-            <li class="breadcrumb-item active">Sites</li>
-        </ol>
-    </nav>
+@section('title', 'Devices')
 
+@section('content')
     <div class="mb-5">
-        <h2 class="text-bold text-body-emphasis">Sites</h2>
+        <h2 class="text-bold text-body-emphasis">Devices</h2>
         <p class="text-body-tertiary lead">
-            Manage sites in factories.
+            Manage devices for sites in factories.
         </p>
     </div>
 
-{{--    <a class="btn btn-primary" href="{{ route('sites.create') }}">--}}
-{{--        <span class="fas fa-plus me-2"></span>--}}
-{{--        Add Site--}}
-{{--    </a>--}}
-
-
-    <div id="sites" data-list='{"valueNames":["title","factory","address"],"page":10,"pagination":true}'>
+    <div id="sites" data-list='{"valueNames":["title","description"],"page":10,"pagination":true}'>
         <div class="row align-items-center justify-content-between g-3 mb-4">
             <div class="col col-auto">
                 <div class="search-box">
@@ -38,9 +27,9 @@
                     <button class="btn btn-link text-body me-4 px-0">
                         <span class="fa-solid fa-file-export fs-9 me-2"></span>Export
                     </button>
-                    <a class="btn btn-primary" href="{{ route('sites.create') }}">
+                    <a class="btn btn-primary" href="{{ route('devices.create') }}">
                         <span class="fas fa-plus me-2"></span>
-                        Add Site
+                        Add Device
                     </a>
                 </div>
             </div>
@@ -51,13 +40,10 @@
                     <thead>
                     <tr>
                         <th class="sort align-middle" scope="col" data-sort="title" style="width:20%; min-width:200px;">
-                            SITE TITLE
+                            DEVICE SERIAL
                         </th>
-                        <th class="sort align-middle" scope="col" data-sort="factory" style="width:20%; min-width:200px;">
-                            FACTORY NAME
-                        </th>
-                        <th class="sort align-middle pe-3" scope="col" data-sort="address" style="width:20%; min-width:200px;">
-                            FACTORY ADDRESS
+                        <th class="sort align-middle" scope="col" data-sort="description" style="width:20%; min-width:200px;">
+                            DESCRIPTION
                         </th>
                         <th class="sort align-middle text-end" scope="col" style="width:21%; min-width:200px;">
                             ACTIONS
@@ -65,18 +51,15 @@
                     </tr>
                     </thead>
                     <tbody class="list" id="sites-table-body">
-                    @foreach($sites as $site)
+                    @foreach($devices as $row)
                         <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                             <td class="customer align-middle white-space-nowrap">
                                 <a class="d-flex align-items-center text-body text-hover-1000 ps-2" href="#">
-                                    <h6 class="mb-0 ms-3 fw-semibold">{{ $site->title }}</h6>
+                                    <h6 class="mb-0 ms-3 fw-semibold">{{ $row->serial_number }}</h6>
                                 </a>
                             </td>
                             <td class="factory align-middle white-space-nowrap">
-                                {{ $site->factory->title }}
-                            </td>
-                            <td class="email align-middle white-space-nowrap">
-                                {{ $site->factory->address }}
+                                {{ $row->description }}
                             </td>
                             <td class="actions align-middle text-end white-space-nowrap text-body-tertiary">
                                 <div class="btn-reveal-trigger position-static">
@@ -93,11 +76,11 @@
                                         </svg>
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-end py-2">
-                                        <a class="dropdown-item" href="{{ route('sites.edit', $site) }}">
+                                        <a class="dropdown-item" href="{{ route('devices.edit', $row->id) }}">
                                             Edit
                                         </a>
                                         <div class="dropdown-divider"></div>
-                                        <form action="{{ route('sites.destroy', $site) }}" method="POST"
+                                        <form action="{{ route('devices.destroy', $row->id) }}" method="POST"
                                               style="display:inline;">
                                             @csrf
                                             @method('DELETE')

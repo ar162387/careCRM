@@ -2,87 +2,86 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Menu;
 use Illuminate\Http\Request;
+use App\Models\Menu; // Adjust according to your actual model namespace
 
 class MenuController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $menus = Menu::with("parent")->get();
-        return view('admin.menus.index', compact('menus'));
+        $menus = Menu::all();
+        return view('menus.index', compact('menus'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $parentMenus = (new Menu())->parentsOnly();
-        return view('admin.menus.create', compact('parentMenus'));
+        $parentMenus = Menu::whereNull('parent_id')->get();
+        return view('menus.create', compact('parentMenus'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $this->validate(request(),[
-            'title' => 'required|string',
+        // Validation
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'icon' => 'nullable|string|max:255',
+            'route' => 'nullable|string|max:255',
+            'parent_id' => 'nullable|exists:menus,id',
+            'display_order' => 'nullable|integer|min:0|max:100',
+            'level' => 'required|in:admin,client',
+            'status' => 'required|boolean',
         ]);
 
-        $menu = new Menu();
-        $menu->title = $request['title'];
-        $menu->icon = $request['icon'];
-        $menu->route = $request['route'];
-        $menu->parent_id = $request['parent_id'];
-        $menu->display_order = $request['display_order'];
-        $menu->level = $request['level'];
-        $menu->status = $request['status'];
-        $menu->save();
+        // Create new menu
+        Menu::create([
+            'title' => $request->title,
+            'icon' => $request->icon,
+            'route' => $request->route,
+            'parent_id' => $request->parent_id,
+            'display_order' => $request->display_order ?? 0,
+            'level' => $request->level,
+            'status' => $request->status,
+        ]);
 
-        return redirect()->route('menus.index');
+        return redirect()->route('menus.index')->with('success', 'Menu created successfully.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Menu $menu)
     {
-        $parentMenus = (new Menu())->parentsOnly();
-        return view('admin.menus.edit', compact('menu', 'parentMenus'));
+        $parentMenus = Menu::whereNull('parent_id')->get();
+        return view('menus.edit', compact('menu', 'parentMenus'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Menu $menu)
     {
-        $this->validate(request(),[
-            'title' => 'required|string',
+        // Validation
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'icon' => 'nullable|string|max:255',
+            'route' => 'nullable|string|max:255',
+            'parent_id' => 'nullable|exists:menus,id',
+            'display_order' => 'nullable|integer|min:0|max:100',
+            'level' => 'required|in:admin,client',
+            'status' => 'required|boolean',
         ]);
 
-        $menu->title = $request['title'];
-        $menu->icon = $request['icon'];
-        $menu->route = $request['route'];
-        $menu->parent_id = $request['parent_id'];
-        $menu->display_order = $request['display_order'];
-        $menu->level = $request['level'];
-        $menu->status = $request['status'];
-        $menu->save();
+        // Update menu
+        $menu->update([
+            'title' => $request->title,
+            'icon' => $request->icon,
+            'route' => $request->route,
+            'parent_id' => $request->parent_id,
+            'display_order' => $request->display_order ?? 0,
+            'level' => $request->level,
+            'status' => $request->status,
+        ]);
 
-        return redirect()->route('menus.index');
+        return redirect()->route('menus.index')->with('success', 'Menu updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Menu $menu)
     {
         $menu->delete();
-        return redirect()->route('menus.index');
+        return redirect()->route('menus.index')->with('success', 'Menu deleted successfully.');
     }
 }

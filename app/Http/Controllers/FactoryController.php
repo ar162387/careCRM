@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Factory;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class FactoryController extends Controller
@@ -12,8 +13,9 @@ class FactoryController extends Controller
      */
     public function index()
     {
+        $users = User::all();
         $factories = Factory::all();
-        return view('admin.factories.index', compact('factories'));
+        return view('admin.factories.index', compact('factories','users'));
     }
 
     /**

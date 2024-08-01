@@ -16,43 +16,12 @@ class DataFileController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) {
-
-        if ($request->ajax())
-        {
-            $data = DataFile::select('*');
-
-            return Datatables::of($data)
-                ->addIndexColumn()
-                ->addColumn('inspection', function($row) {
-                    return view('admin.data.partial.inspection', compact('row'));
-                })
-                ->addColumn('device', function ($row) {
-                    return $row->device->serial_number;
-                })
-                ->addColumn('component', function ($row) {
-                    return ($row->component) ? $row->component->title : "";
-                })
-                ->addColumn('site', function ($row) {
-                    return $row->site->title;
-                })
-                ->addColumn('factory', function ($row) {
-                    return $row->site->factory->title;
-                })
-                ->addColumn('uploaded_at', function ($row) {
-                    return view('admin.data.partial.uploaded_at', compact('row'));
-                })
-                ->addColumn('action', function($row) {
-                    return view('admin.data.partial.action', compact('row'));
-                })
-                ->rawColumns(['inspection', 'uploaded_at', 'action'])
-                ->make(true);
-        }
-
+    public function index() {
+        $files = DataFile::all();
         $factories = Factory::all();
         $devices = Device::all();
         $inspections = Inspection::where('taken_up', false)->get();
-        return view('admin.data.index', compact('factories', 'devices', 'inspections'));
+        return view('admin.data.index', compact('files', 'factories', 'devices', 'inspections'));
     }
 
 

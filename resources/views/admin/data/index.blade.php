@@ -1,4 +1,4 @@
-@extends('layouts.powereye')
+@extends('layouts.care')
 
 @section('content')
 

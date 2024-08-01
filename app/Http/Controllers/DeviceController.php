@@ -12,7 +12,9 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        //
+        / $devices = Device::all(); // Fetch all devices (adjust as per your application logic)
+
+        return view('devices.index', compact('devices'));
     }
 
     /**
@@ -20,7 +22,7 @@ class DeviceController extends Controller
      */
     public function create()
     {
-        //
+        return view('devices.create');
     }
 
     /**
@@ -28,7 +30,15 @@ class DeviceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'serial_number' => 'required|string|unique:devices,serial_number',
+            'description' => 'nullable|string',
+        ]);
+
+        Device::create($request->all());
+
+        return redirect()->route('devices.index')
+            ->with('success', 'Device created successfully.');
     }
 
     /**
@@ -36,7 +46,7 @@ class DeviceController extends Controller
      */
     public function show(Device $device)
     {
-        //
+        return view('devices.show', compact('device'));
     }
 
     /**
@@ -44,7 +54,7 @@ class DeviceController extends Controller
      */
     public function edit(Device $device)
     {
-        //
+        return view('devices.edit', compact('device'));
     }
 
     /**
@@ -52,7 +62,15 @@ class DeviceController extends Controller
      */
     public function update(Request $request, Device $device)
     {
-        //
+        $request->validate([
+            'serial_number' => 'required|string|unique:devices,serial_number,' . $device->id,
+            'description' => 'nullable|string',
+        ]);
+
+        $device->update($request->all());
+
+        return redirect()->route('devices.index')
+            ->with('success', 'Device updated successfully.');
     }
 
     /**
@@ -60,6 +78,9 @@ class DeviceController extends Controller
      */
     public function destroy(Device $device)
     {
-        //
+        $device->delete();
+
+        return redirect()->route('devices.index')
+            ->with('success', 'Device deleted successfully.');
     }
 }

@@ -1,4 +1,4 @@
-@extends('layouts.powereye')
+@extends('layouts.care')
 
 @section('content')
     <nav class="mb-3" aria-label="breadcrumb">
