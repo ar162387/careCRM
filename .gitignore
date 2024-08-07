@@ -18,3 +18,4 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+resources/views/sensor_data.zip
